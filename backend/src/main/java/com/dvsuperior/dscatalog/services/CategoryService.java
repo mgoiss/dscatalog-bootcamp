@@ -18,20 +18,27 @@ import com.dvsuperior.dscatalog.repositories.CategoryRepository;
 public class CategoryService {
 	
 	@Autowired
-	private CategoryRepository reposytory;
+	private CategoryRepository repository;
 	
 	//Metodo responsável por pegar todoas as categorias no banco
 	@Transactional(readOnly = true) //Essa Another vai fazer com que a transação siga as PROPRIEDADE ASSINCRONA (onde ou faz tudo ou não faz nd)
 	public List<CategoryDTO> findAll() {
-		List<Category> list = reposytory.findAll();
+		List<Category> list = repository.findAll();
 		
 		return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());		
 	}
 	
 	@Transactional(readOnly = true)
 	public CategoryDTO findById(Long id) {
-		Optional<Category> obj = reposytory.findById(id);
+		Optional<Category> obj = repository.findById(id);
 		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+		return new CategoryDTO(entity);
+	}
+
+	public CategoryDTO insert(CategoryDTO dto) {
+		Category entity = new Category();
+		entity.setName(dto.getName());
+		entity = repository.save(entity);
 		return new CategoryDTO(entity);
 	}
 
