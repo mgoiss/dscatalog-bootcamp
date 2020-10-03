@@ -6,18 +6,19 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.dvsuperior.dscatalog.services.exceptions.DatabaseException;
-import com.dvsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dvsuperior.dscatalog.dto.CategoryDTO;
 import com.dvsuperior.dscatalog.entities.Category;
 import com.dvsuperior.dscatalog.repositories.CategoryRepository;
+import com.dvsuperior.dscatalog.services.exceptions.DatabaseException;
+import com.dvsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class CategoryService {
@@ -27,10 +28,10 @@ public class CategoryService {
 	
 	//Metodo responsável por pegar todoas as categorias no banco
 	@Transactional(readOnly = true) //Essa Another vai fazer com que a transação siga as PROPRIEDADE ASSINCRONA (onde ou faz tudo ou não faz nd)
-	public List<CategoryDTO> findAll() {
-		List<Category> list = repository.findAll();
+	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Category> list = repository.findAll(pageRequest);
 		
-		return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());		
+		return list.map(x -> new CategoryDTO(x));		
 	}
 	
 	@Transactional(readOnly = true)
