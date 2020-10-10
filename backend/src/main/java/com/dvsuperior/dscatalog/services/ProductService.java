@@ -34,7 +34,7 @@ public class ProductService {
 	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
 		Page<Product> list = repository.findAll(pageRequest);
 		
-		return list.map(x -> new ProductDTO(x));		
+		return list.map(x -> new ProductDTO(x, x.getCategories()));		
 	}
 	
 	@Transactional(readOnly = true)
@@ -78,20 +78,17 @@ public class ProductService {
 		}
 	}
 
-	private void copyDtoToEntity(ProductDTO dto, Product entity) {
-		
+	private void copyDtoToEntity(ProductDTO dto, Product entity) {		
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
 		entity.setDate(dto.getDate());
 		entity.setImgUrl(dto.getImgUrl());
-		entity.setPrice(dto.getPrice());
-		
+		entity.setPrice(dto.getPrice());		
 		entity.getCategories().clear();
 		for (CategoryDTO catDto : dto.getCategories()) {
 			Category category = categoryRepository.getOne(catDto.getId());
 			entity.getCategories().add(category);
-		}
-		
+		}		
 	}
 	
 } 

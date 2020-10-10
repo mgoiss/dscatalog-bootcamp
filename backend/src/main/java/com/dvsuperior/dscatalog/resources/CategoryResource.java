@@ -27,7 +27,7 @@ public class CategoryResource {
 	
 	@Autowired
 	private CategoryService service;
-		
+		 
 	//Metodo para retornar os dados
 	@GetMapping
 	public ResponseEntity<Page<CategoryDTO>> findAll(
