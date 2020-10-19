@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,12 +25,14 @@ public class User implements Serializable{
 	private Long id;
 	private String firstName;
 	private String lastName;
+	
+	@Column(unique = true)
 	private String email;
 	private String password;
 	
 	//o 'set' serve para que a lista não contenha repetições, nesse caso, para que um usuário não tenha mais de um Role
 	//o 'set' é uma interface com isso para instancia-la é preciso instnacia um classe que implementa a interface, no caso o HashSet
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER) //Sempre que buscar o usuário, vai pegar junto os ROLES
 	@JoinTable(name = "tb_user_role",
 		joinColumns = @JoinColumn(name = "user_id"), //Chave estrangeira da classe atual
 		inverseJoinColumns = @JoinColumn(name = "role_id"))
