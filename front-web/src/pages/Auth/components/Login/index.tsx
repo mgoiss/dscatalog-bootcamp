@@ -1,6 +1,6 @@
 import ButtonIcon from 'core/components/Buttonicon';
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import AuthCard from '../Card';
 import './styles.scss';
@@ -12,17 +12,26 @@ type FormData = {
     password: string;
 }
 
+type LocationState = {
+    from: string;
+}
+
 const Login = () => {
     const { register, handleSubmit, errors } = useForm<FormData>();
     const [hasError, setHasError] = useState(false);
     const history = useHistory();
+
+    let location = useLocation<LocationState>();
+    let { from } = location.state || { from: { pathname: "/admin" } };
 
     const onSubmit = (data: FormData) => {
         makeLogin(data)
             .then(response => {
                 setHasError(false);
                 saveSessionData(response.data);
-                history.push('/admin')
+                history.replace(from)
+                //O replace vai substituir a tela de login pela tela que vai ser redirecionada
+                //O push vai empilhando
             })
             .catch(() => {
                 setHasError(true);
